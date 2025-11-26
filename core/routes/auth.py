@@ -17,42 +17,49 @@ login_model = auth_ns.model('Login', {
 
 @auth_ns.route('/login')
 class AuthLogin(Resource):
-    @jwt_required(optional=True)
     @auth_ns.expect(login_model)
     def post(self):
-        credentials = request.get_json()
-        username = credentials.get('username')
-        password = credentials.get('password')
-        access_token = current_app.user_service.login_user(username, password)
+        data = request.get_json()
+        result = current_app.user_service.login_user(
+            data.get("username"),
+            data.get("password")
+        )
 
-        if access_token:
-            return jsonify(access_token=access_token), 200
-        
-        return jsonify(message="Invalid credentials"), 401
+        if result["success"]:
+            return {"access_token": result["access_token"]}, 200
+
+        return result, 401
 
 @auth_ns.route('/register')
 class AuthRegister(Resource):
     @auth_ns.expect(register_model)
     def post(self):
-        credentials = request.get_json()
-        username = credentials.get('username')
-        password = credentials.get('password')
-        email = credentials.get('email')
-        register = current_app.user_service.register_user(username, password, email)
-        if register:
-            return jsonify(message="User registered successfully"), 201
-        return jsonify(message="Registration failed"), 400
+        data = request.get_json()
+        result = current_app.user_service.register_user(
+            data.get("username"), data.get("password"), data.get("email")
+        )
+
+        if result["success"]:
+            return {"message": "User registered successfully"}, 201
+
+        return result, 400
 
 @auth_ns.route('/logout')
 class AuthLogout(Resource):
     def post(self):
         response = jsonify(message="Logout successful")
-        current_app.user_service.logout_user(response=response)
-        return response, 200
+        result = current_app.user_service.logout_user()
+
+        if result["success"]:
+            unset_jwt_cookies(response)
+            response.status_code = 200
+            return response
+
+        return result, 400
     
 @auth_ns.route('/dashboard')
 class AuthDashboard(Resource):
     @jwt_required()
     def get(self):
         key = get_jwt_identity()
-        return jsonify(message="Protected dashboard endpoint", jwt=key)
+        return {"message": "Protected dashboard endpoint", "jwt": key}

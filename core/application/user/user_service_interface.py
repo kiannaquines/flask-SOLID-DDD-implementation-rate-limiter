@@ -14,5 +14,5 @@ class UserServiceInterface(ABC):
         pass
 
     @abstractmethod
-    def logout_user(self, response):
+    def logout_user(self):
         pass

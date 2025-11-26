@@ -1,13 +1,15 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 
 class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-    JWT_TOKEN_LOCATION = ["headers", "cookies", "json", "query_string"]
+    JWT_TOKEN_LOCATION = ["headers", "cookies"]
     JWT_COOKIE_SECURE = False
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     APP_NAME = os.getenv('APP_NAME', 'Task Management System')
 
 class DevelopmentConfig(BaseConfig):
