@@ -1,6 +1,8 @@
 from flask import request, current_app
 from flask_restx import Resource, Namespace, fields
-from ..config.extension import limiter
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 task_ns = Namespace('Tasks', description='Task related operations')
 
@@ -13,12 +15,14 @@ task_model = task_ns.model('Task', {
 
 @task_ns.route('/')
 class TaskList(Resource):
+    @jwt_required()
     def get(self):
         tasks = current_app.task_service.list_task()
         return {"tasks": [task.to_dict() for task in tasks]}
 
 @task_ns.route('/<int:task_id>')
 class TaskDetail(Resource):
+    @jwt_required()
     @task_ns.marshal_with(task_model)
     def get(self, task_id):
         task = current_app.task_service.get_one_task(task_id)
@@ -28,6 +32,7 @@ class TaskDetail(Resource):
 
 @task_ns.route('/create')
 class TaskCreate(Resource):
+    @jwt_required()
     @task_ns.expect(task_model)
     @task_ns.marshal_with(task_model, code=201)
     def post(self):
@@ -39,6 +44,7 @@ class TaskCreate(Resource):
 
 @task_ns.route('/<int:task_id>/update')
 class TaskUpdate(Resource):
+    @jwt_required()
     @task_ns.expect(task_model)
     @task_ns.marshal_with(task_model)
     def put(self, task_id):
@@ -57,6 +63,7 @@ class TaskUpdate(Resource):
 
 @task_ns.route('/<int:task_id>/delete')
 class TaskDelete(Resource):
+    @jwt_required()
     def delete(self, task_id):
         task = current_app.task_service.get_one_task(task_id)
         if not task:

@@ -5,6 +5,9 @@ load_dotenv()
 
 class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+    JWT_TOKEN_LOCATION = ["headers", "cookies", "json", "query_string"]
+    JWT_COOKIE_SECURE = False
     APP_NAME = os.getenv('APP_NAME', 'Task Management System')
 
 class DevelopmentConfig(BaseConfig):
