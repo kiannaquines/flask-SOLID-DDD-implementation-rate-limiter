@@ -124,4 +124,26 @@ def create_app(config=ProductionConfig):
             "error": "token_revoked"
         }, 401
 
+    # Health check endpoint for monitoring
+    @app.route('/health')
+    def health_check():
+        return {
+            'status': 'healthy',
+            'service': 'task-management-api',
+            'version': '1.0.0'
+        }, 200
+
+    @app.route('/')
+    def root():
+        return {
+            'message': 'Task Management API',
+            'version': '1.0.0',
+            'documentation': '/api/v1/docs',
+            'endpoints': {
+                'auth': '/api/v1/auth',
+                'tasks': '/api/v1/tasks',
+                'dashboard': '/api/v1/dashboard'
+            }
+        }, 200
+
     return app
