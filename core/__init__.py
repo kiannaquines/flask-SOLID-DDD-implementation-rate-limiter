@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, request
+
 from .config.extension import db, migrate, limiter, jwt
-from .config import DevelopmentConfig
-from .routes.main import main_ns
+from .config import ProductionConfig, DevelopmentConfig
+from .routes.dashboard import dashboard_ns
 from .routes.auth import auth_ns
 from .routes.task import task_ns
 from .infrastructure.di_binder import bind_task_repository, bind_user_repository
@@ -26,9 +27,10 @@ api = Api(
     contact_email="kjgnaquines@gmail.com",
     security="Bearer Auth",
     authorizations=authorizations,
+    prefix="/api/v1",
 )
 
-def create_app(config=DevelopmentConfig):
+def create_app(config=ProductionConfig):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config or DevelopmentConfig)
 
@@ -55,7 +57,7 @@ def create_app(config=DevelopmentConfig):
     from .domain.user import User
 
     # Register namespaces
-    api.add_namespace(main_ns, path="/")
+    api.add_namespace(dashboard_ns, path="/dashboard")
     api.add_namespace(auth_ns, path="/auth")
     api.add_namespace(task_ns, path="/tasks")
 

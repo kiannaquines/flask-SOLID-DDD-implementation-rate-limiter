@@ -1,7 +1,5 @@
 from flask import request, current_app
 from flask_restx import Resource, Namespace, fields
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
 task_ns = Namespace('Tasks', description='Task related operations')

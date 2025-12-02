@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import get_jwt_identity, jwt_required, unset_jwt_cookies
+from flask_jwt_extended import unset_jwt_cookies
 from flask import request, current_app, jsonify
 
 auth_ns = Namespace('Auth', description='Authentication related operations')
@@ -16,6 +16,7 @@ login_model = auth_ns.model('Login', {
 })
 
 @auth_ns.route('/login')
+@auth_ns.doc(security=[])
 class AuthLogin(Resource):
     @auth_ns.expect(login_model)
     def post(self):
@@ -31,6 +32,7 @@ class AuthLogin(Resource):
         return result, 401
 
 @auth_ns.route('/register')
+@auth_ns.doc(security=[])
 class AuthRegister(Resource):
     @auth_ns.expect(register_model)
     def post(self):
@@ -56,10 +58,3 @@ class AuthLogout(Resource):
             return response
 
         return result, 400
-    
-@auth_ns.route('/dashboard')
-class AuthDashboard(Resource):
-    @jwt_required()
-    def get(self):
-        key = get_jwt_identity()
-        return {"message": "Protected dashboard endpoint", "jwt": key}

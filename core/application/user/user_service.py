@@ -37,7 +37,7 @@ class UserService(UserServiceInterface):
             user = self.user_repository.login_user(username)
 
             if user and check_password_hash(user.password_hash, password):
-                token = create_access_token(identity=user.id)
+                token = create_access_token(identity=user.username)
                 return {"success": True, "access_token": token}
 
             return {
