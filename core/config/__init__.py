@@ -17,6 +17,18 @@ class BaseConfig:
     JWT_HEADER_TYPE = "Bearer"    
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     APP_NAME = os.getenv('APP_NAME', 'Task Management System')
+    
+    # Swagger UI Configuration
+    RESTX_MASK_SWAGGER = False
+    SWAGGER_UI_DOC_EXPANSION = 'list'  # 'none', 'list', or 'full'
+    SWAGGER_UI_OPERATION_ID = True
+    SWAGGER_UI_REQUEST_DURATION = True
+    ERROR_404_HELP = False
+    RESTX_VALIDATE = True
+    RESTX_JSON = {
+        'indent': 2,
+        'sort_keys': False,
+    }
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('DEV_DB')

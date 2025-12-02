@@ -22,11 +22,34 @@ authorizations = {
 api = Api(
     version="1.0.0",
     title="Task Management API",
-    description="A python flask task management API",
+    description="""## A comprehensive Task Management REST API built with Flask
+    
+### Features:
+- **Authentication**: Secure JWT-based authentication
+- **Task Management**: Full CRUD operations for tasks
+- **Rate Limiting**: Built-in API rate limiting for security
+- **Clean Architecture**: Implements SOLID principles and DDD patterns
+
+### Getting Started:
+1. Register a new user via `/api/v1/auth/register`
+2. Login to get your JWT token via `/api/v1/auth/login`
+3. Use the token in the Authorization header for protected endpoints
+4. Click the 'Authorize' button above to set your token for testing
+
+### Support:
+For issues or questions, contact: kjgnaquines@gmail.com
+    """,
     contact="Support Team",
     contact_email="kjgnaquines@gmail.com",
+    contact_url="https://github.com/kiannaquines/flask-SOLID-DDD-implementation-rate-limiter",
+    license="MIT",
+    license_url="https://opensource.org/licenses/MIT",
     authorizations=authorizations,
+    security="Bearer Auth",
     prefix="/api/v1",
+    doc="/docs",
+    ordered=True,
+    validate=True
 )
 
 def create_app(config=ProductionConfig):
