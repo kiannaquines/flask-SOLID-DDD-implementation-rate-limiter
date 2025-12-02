@@ -18,7 +18,10 @@ login_model = auth_ns.model('Login', {
 
 # Response models
 token_response_model = auth_ns.model('TokenResponse', {
-    'access_token': fields.String(description='JWT access token', example='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...')
+    'access_token': fields.String(
+        description='JWT access token - Use this with "Bearer" prefix in Authorization header',
+        example='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzODM2MDAwMCwianRpIjoiYWJjZDEyMzQiLCJ0eXBlIjoiYWNjZXNzIiwic3ViIjoiam9obl9kb2UiLCJuYmYiOjE2MzgzNjAwMDAsImV4cCI6MTYzODM2MzYwMH0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+    )
 })
 
 success_message_model = auth_ns.model('SuccessMessage', {
@@ -33,7 +36,14 @@ error_response_model = auth_ns.model('ErrorResponse', {
 @auth_ns.route('/login')
 class AuthLogin(Resource):
     @auth_ns.doc(
-        description='Authenticate user and receive JWT access token',
+        description='''Authenticate user and receive JWT access token.
+        
+**After login:**
+1. Copy the `access_token` from the response
+2. Click the "Authorize" button at the top of this page
+3. Enter: `Bearer <your_access_token>`
+4. Click "Authorize" to use protected endpoints
+        ''',
         responses={
             200: ('Success - Returns JWT token', token_response_model),
             401: ('Unauthorized - Invalid credentials', error_response_model),

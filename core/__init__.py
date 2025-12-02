@@ -15,7 +15,17 @@ authorizations = {
         "type": "apiKey",
         "in": "header",
         "name": "Authorization",
-        "description": 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"',
+        "description": '''JWT Authorization header using the Bearer scheme.
+        
+**Format:** `Bearer <your_jwt_token>`
+
+**Example:** `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+
+**Important:** 
+- You must include the word "Bearer" followed by a space before your token
+- Click "Authorize" button above and enter: `Bearer <token>`
+- Or in curl: `-H "Authorization: Bearer <token>"`
+        ''',
     }
 }
 
@@ -82,5 +92,36 @@ def create_app(config=ProductionConfig):
     api.add_namespace(dashboard_ns, path="/dashboard")
     api.add_namespace(auth_ns, path="/auth")
     api.add_namespace(task_ns, path="/tasks")
+
+    # JWT error handlers
+    @jwt.expired_token_loader
+    def expired_token_callback(jwt_header, jwt_payload):
+        return {
+            "message": "The token has expired. Please login again to get a new token.",
+            "error": "token_expired"
+        }, 401
+
+    @jwt.invalid_token_loader
+    def invalid_token_callback(error):
+        return {
+            "message": "Invalid token format. Use 'Authorization: Bearer <your_token>'",
+            "error": "invalid_token",
+            "hint": "Make sure to include 'Bearer ' before your token"
+        }, 401
+
+    @jwt.unauthorized_loader
+    def missing_token_callback(error):
+        return {
+            "message": "Authorization header is missing. Please provide a valid JWT token.",
+            "error": "authorization_required",
+            "hint": "Use 'Authorization: Bearer <your_token>' in the request header"
+        }, 401
+
+    @jwt.revoked_token_loader
+    def revoked_token_callback(jwt_header, jwt_payload):
+        return {
+            "message": "The token has been revoked. Please login again.",
+            "error": "token_revoked"
+        }, 401
 
     return app

@@ -31,6 +31,12 @@ error_model = task_ns.model('Error', {
     'message': fields.String(description='Error message', example='Task not found')
 })
 
+auth_error_model = task_ns.model('AuthError', {
+    'message': fields.String(description='Error message', example='Invalid token format. Use \'Authorization: Bearer <your_token>\''),
+    'error': fields.String(description='Error code', example='invalid_token'),
+    'hint': fields.String(description='Helpful hint', example='Make sure to include \'Bearer \' before your token')
+})
+
 @task_ns.route('/')
 @task_ns.doc(security='Bearer Auth')
 class TaskList(Resource):
@@ -39,7 +45,7 @@ class TaskList(Resource):
         description='Retrieve all tasks for the authenticated user',
         responses={
             200: ('Success', task_list_model),
-            401: 'Unauthorized - Invalid or missing token',
+            401: ('Unauthorized - Invalid or missing token. Use format: Bearer <token>', auth_error_model),
             500: 'Internal Server Error'
         }
     )
