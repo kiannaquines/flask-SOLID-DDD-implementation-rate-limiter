@@ -1,8 +1,12 @@
 import os
-from dotenv import load_dotenv
 from datetime import timedelta
 
-load_dotenv()
+# Only load .env file in local development (Vercel provides env vars directly)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
 
 class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
