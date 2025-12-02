@@ -25,7 +25,6 @@ api = Api(
     description="A python flask task management API",
     contact="Support Team",
     contact_email="kjgnaquines@gmail.com",
-    security="Bearer Auth",
     authorizations=authorizations,
     prefix="/api/v1",
 )

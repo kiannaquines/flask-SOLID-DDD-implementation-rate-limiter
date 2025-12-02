@@ -12,6 +12,7 @@ task_model = task_ns.model('Task', {
 })
 
 @task_ns.route('/')
+@task_ns.doc(security='Bearer Auth')
 class TaskList(Resource):
     @jwt_required()
     def get(self):
@@ -19,6 +20,7 @@ class TaskList(Resource):
         return {"tasks": [task.to_dict() for task in tasks]}
 
 @task_ns.route('/<int:task_id>')
+@task_ns.doc(security='Bearer Auth')
 class TaskDetail(Resource):
     @jwt_required()
     @task_ns.marshal_with(task_model)
@@ -29,6 +31,7 @@ class TaskDetail(Resource):
         return task.to_dict()
 
 @task_ns.route('/create')
+@task_ns.doc(security='Bearer Auth')
 class TaskCreate(Resource):
     @jwt_required()
     @task_ns.expect(task_model)
@@ -41,6 +44,7 @@ class TaskCreate(Resource):
         return task.to_dict(), 201
 
 @task_ns.route('/<int:task_id>/update')
+@task_ns.doc(security='Bearer Auth')
 class TaskUpdate(Resource):
     @jwt_required()
     @task_ns.expect(task_model)
@@ -60,6 +64,7 @@ class TaskUpdate(Resource):
         return update.to_dict(), 200
 
 @task_ns.route('/<int:task_id>/delete')
+@task_ns.doc(security='Bearer Auth')
 class TaskDelete(Resource):
     @jwt_required()
     def delete(self, task_id):
